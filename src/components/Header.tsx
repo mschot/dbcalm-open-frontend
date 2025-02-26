@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const Header = () => {
+interface HeaderProps {
+  currentPage?: "backups" | "clients";
+}
+
+export const Header = ({ currentPage = "backups" }: HeaderProps) => {
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -15,10 +21,17 @@ export const Header = () => {
     setCreateMenuOpen(false);
   };
 
+  const handleAddClient = () => {
+    navigate('/add-client');
+    setCreateMenuOpen(false);
+  };
+
   return (
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center gap-6 mt-8">
-        <h1 className="text-3xl font-bold text-primary">Backups</h1>
+        <h1 className="text-3xl font-bold text-primary">
+          {currentPage === "backups" ? "Backups" : "Clients"}
+        </h1>
       </div>
       <div className="flex flex-col items-end gap-2">
         <div className="dropdown dropdown-end">
@@ -86,22 +99,35 @@ export const Header = () => {
 
           {createMenuOpen && (
             <ul className="dropdown-content menu menu-sm bg-base-200 rounded-box w-48 p-2 shadow-lg">
-              <li>
-                <button
-                  onClick={() => handleNewBackup('full')}
-                  className="text-sm"
-                >
-                  New full backup
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNewBackup('incremental')}
-                  className="text-sm"
-                >
-                  New incremental backup
-                </button>
-              </li>
+              {currentPage === "backups" ? (
+                <>
+                  <li>
+                    <button
+                      onClick={() => handleNewBackup('full')}
+                      className="text-sm"
+                    >
+                      New full backup
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNewBackup('incremental')}
+                      className="text-sm"
+                    >
+                      New incremental backup
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <button
+                    onClick={handleAddClient}
+                    className="text-sm"
+                  >
+                    Add new client
+                  </button>
+                </li>
+              )}
             </ul>
           )}
         </div>

@@ -1,0 +1,187 @@
+import { useState, useEffect } from 'react';
+import { Api } from '../utils/api';
+import { Client } from '../types/client';
+import { ClientResponse } from '../types/clientResponse';
+import { Header } from '../components/Header';
+import { Pagination } from '../components/Pagination';
+
+const Clients = () => {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [showPagination, setShowPagination] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editLabel, setEditLabel] = useState<string>('');
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await Api.get(`/clients?page=${currentPage}`) as ClientResponse;
+        const formattedClients = response.items.map(item => ({
+          id: item.id,
+          label: item.label
+        }));
+        setClients(formattedClients);
+        setTotalPages(Math.ceil(response.pagination.total / response.pagination.per_page));
+
+        // Show pagination only if there are more results than per_page or we're not on the first page
+        setShowPagination(
+          response.pagination.total > response.pagination.per_page || currentPage > 1
+        );
+      } catch (error) {
+        console.error('Failed to fetch clients:', error);
+      }
+    };
+
+    fetchClients();
+  }, [currentPage]);
+
+  const handleDeleteClient = async (id: string) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this client? This action cannot be undone and may affect services using this client key."
+    );
+
+    if (isConfirmed) {
+      try {
+        await Api.delete(`/clients/${id}`);
+        // Refresh the clients list after deletion
+        setClients(clients.filter(client => client.id !== id));
+      } catch (error) {
+        console.error('Failed to delete client:', error);
+        alert('Failed to delete the client. Please try again.');
+      }
+    }
+  };
+
+  const startEditing = (client: Client) => {
+    setEditingId(client.id);
+    setEditLabel(client.label);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditLabel('');
+  };
+
+  const saveClientLabel = async (id: string) => {
+    try {
+      await Api.put(`/clients/${id}`, { label: editLabel });
+
+      // Update client in the local state
+      setClients(clients.map(client =>
+        client.id === id ? { ...client, label: editLabel } : client
+      ));
+
+      // Exit edit mode
+      setEditingId(null);
+    } catch (error) {
+      console.error('Failed to update client label:', error);
+      alert('Failed to update the client label. Please try again.');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, id: string) => {
+    if (e.key === 'Enter') {
+      saveClientLabel(id);
+    } else if (e.key === 'Escape') {
+      cancelEditing();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-base-200 p-4">
+      <div className="container mx-auto">
+        <Header currentPage="clients" />
+
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body p-0">
+            <div className="overflow-x-auto">
+              <table className="table table-zebra w-full">
+                <thead>
+                  <tr>
+                    <th className="text-base-content">Label</th>
+                    <th className="text-base-content">Client ID</th>
+                    <th className="text-right text-base-content">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clients.map((client) => (
+                    <tr key={client.id} className="hover">
+                      <td className="font-medium">
+                        {editingId === client.id ? (
+                          <div className="flex items-center">
+                            <input
+                              type="text"
+                              value={editLabel}
+                              onChange={(e) => setEditLabel(e.target.value)}
+                              onKeyDown={(e) => handleKeyDown(e, client.id)}
+                              className="input input-bordered input-sm w-full max-w-xs"
+                              autoFocus
+                            />
+                            <div className="flex gap-1 ml-2">
+                              <button
+                                onClick={() => saveClientLabel(client.id)}
+                                className="btn btn-ghost btn-xs text-success"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={cancelEditing}
+                                className="btn btn-ghost btn-xs text-error"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center">
+                            {client.label}
+                            <button
+                              onClick={() => startEditing(client)}
+                              className="btn btn-ghost btn-xs ml-2"
+                              title="Edit label"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                              </svg>
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                      <td>{client.id}</td>
+                      <td className="text-right">
+                        <button
+                          onClick={() => handleDeleteClient(client.id)}
+                          className="btn btn-ghost btn-sm text-error"
+                          title="Delete client"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {showPagination && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Clients;

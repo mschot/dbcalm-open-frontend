@@ -5,12 +5,14 @@ import { BackupTypeIcon } from '../components/BackupTypeIcon';
 import { Backup } from '../types/backup';
 import { BackupResponse } from '../types/backupResponse';
 import { Header } from '../components/Header';
+import { Pagination } from '../components/Pagination';
 
 const Dashboard = () => {
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null);
   const [backups, setBackups] = useState<Backup[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showPagination, setShowPagination] = useState(false);
 
   useEffect(() => {
     const fetchBackups = async () => {
@@ -23,6 +25,11 @@ const Dashboard = () => {
         }));
         setBackups(formattedBackups);
         setTotalPages(Math.ceil(response.pagination.total / response.pagination.per_page));
+
+        // Show pagination only if there are more results than per_page or we're not on the first page
+        setShowPagination(
+          response.pagination.total > response.pagination.per_page || currentPage > 1
+        );
       } catch (error) {
         console.error('Failed to fetch backups:', error);
       }
@@ -39,7 +46,7 @@ const Dashboard = () => {
   const handleRestore = (id: string) => {
     console.log('Restore backup', id);
     setActionMenuOpen(null);
-};
+  };
 
   return (
     <div className="min-h-screen bg-base-200 p-4">
@@ -113,27 +120,13 @@ const Dashboard = () => {
               </table>
             </div>
 
-            <div className="flex justify-center py-4">
-              <div className="join">
-                <button
-                  className="join-item btn btn-sm"
-                  onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
-                  disabled={currentPage === 1}
-                >
-                  «
-                </button>
-                <button className="join-item btn btn-sm">
-                  Page {currentPage} of {totalPages}
-                </button>
-                <button
-                  className="join-item btn btn-sm"
-                  onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  »
-                </button>
-              </div>
-            </div>
+            {showPagination && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </div>
         </div>
       </div>
