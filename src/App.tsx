@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import { checkAuth } from './utils/auth';
+import AddClient from './pages/AddClient';
 import './App.css'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -42,6 +43,14 @@ function App() {
             <ProtectedRoute>
               <Clients />
             </ProtectedRoute>
+          }
+        />
+        <Route
+         path="/add-client"
+         element={
+          <ProtectedRoute>
+            <AddClient />
+          </ProtectedRoute>
           }
         />
       </Routes>

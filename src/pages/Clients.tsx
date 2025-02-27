@@ -27,9 +27,6 @@ const Clients = () => {
         }));
         setClients(formattedClients);
         setPaginationResponse(response.pagination);
-
-
-
       } catch (error) {
         console.error('Failed to fetch clients:', error);
       }
@@ -103,7 +100,7 @@ const Clients = () => {
                   <tr>
                     <th className="text-base-content">Label</th>
                     <th className="text-base-content">Client ID</th>
-                    <th className="text-right text-base-content">Actions</th>
+                    <th className="text-right text-base-content"></th>
                   </tr>
                 </thead>
                 <tbody>

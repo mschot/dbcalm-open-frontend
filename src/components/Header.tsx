@@ -26,6 +26,14 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
     setCreateMenuOpen(false);
   };
 
+  const handleAddClick = (currentPage: string) => {
+    if (currentPage === "backups") {
+      setCreateMenuOpen(!createMenuOpen);
+    } else if (currentPage === "clients") {
+      handleAddClient();
+    }
+  };
+
   return (
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center gap-6 mt-8">
@@ -79,7 +87,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
 
         <div className="dropdown dropdown-end">
           <button
-            onClick={() => setCreateMenuOpen(!createMenuOpen)}
+            onClick={() => handleAddClick(currentPage)}
             className="btn btn-circle btn-sm"
           >
             <svg
@@ -118,16 +126,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
                     </button>
                   </li>
                 </>
-              ) : (
-                <li>
-                  <button
-                    onClick={handleAddClient}
-                    className="text-sm"
-                  >
-                    Add new client
-                  </button>
-                </li>
-              )}
+              ): null}
             </ul>
           )}
         </div>
