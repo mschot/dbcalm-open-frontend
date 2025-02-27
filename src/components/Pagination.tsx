@@ -1,17 +1,26 @@
 import React from 'react';
 
+export interface PaginationResponse {
+  total: number
+  page: number
+  per_page: number
+  total_pages: number
+}
+
 interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
+  paginationResponse: PaginationResponse;
   onPageChange: (page: number) => void;
 }
 
 export const Pagination: React.FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
+  paginationResponse,
   onPageChange
 }) => {
-  return (
+  const currentPage = paginationResponse.page;
+  const totalPages = paginationResponse.total_pages;
+  const showPagination = paginationResponse.total > paginationResponse.per_page || currentPage > 1
+
+  return (showPagination ?
     <div className="flex justify-center py-4">
       <div className="join">
         <button
@@ -33,5 +42,5 @@ export const Pagination: React.FC<PaginationProps> = ({
         </button>
       </div>
     </div>
-  );
+  : null);
 };

@@ -3,13 +3,17 @@ import { Api } from '../utils/api';
 import { Client } from '../types/client';
 import { ClientResponse } from '../types/clientResponse';
 import { Header } from '../components/Header';
-import { Pagination } from '../components/Pagination';
+import { Pagination, PaginationResponse } from '../components/Pagination';
 
 const Clients = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [showPagination, setShowPagination] = useState(false);
+  const [paginationResponse, setPaginationResponse] = useState<PaginationResponse>({
+    total: 0,
+    page: 1,
+    per_page: 25,
+    total_pages: 1
+  });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editLabel, setEditLabel] = useState<string>('');
 
@@ -22,12 +26,10 @@ const Clients = () => {
           label: item.label
         }));
         setClients(formattedClients);
-        setTotalPages(Math.ceil(response.pagination.total / response.pagination.per_page));
+        setPaginationResponse(response.pagination);
 
-        // Show pagination only if there are more results than per_page or we're not on the first page
-        setShowPagination(
-          response.pagination.total > response.pagination.per_page || currentPage > 1
-        );
+
+
       } catch (error) {
         console.error('Failed to fetch clients:', error);
       }
@@ -169,14 +171,10 @@ const Clients = () => {
                 </tbody>
               </table>
             </div>
-
-            {showPagination && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            )}
+            <Pagination
+              paginationResponse={paginationResponse}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </div>
