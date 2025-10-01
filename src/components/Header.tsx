@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Api } from "../utils/api";
+import { useProcessMonitor } from "../hooks/useProcessMonitor";
 
 interface HeaderProps {
   currentPage?: "backups" | "clients";
@@ -9,6 +11,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { startMonitoring, activeProcesses } = useProcessMonitor();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -16,9 +19,16 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
     window.location.href = '/login';
   };
 
-  const handleNewBackup = (type: 'full' | 'incremental') => {
-    console.log('Creating new', type, 'backup');
-    setCreateMenuOpen(false);
+  const handleNewBackup = async (type: 'full' | 'incremental') => {
+    try {
+      const response = await Api.post('/backups', { type });
+      const processType = type === 'full' ? 'full_backup' : 'incremental_backup';
+      startMonitoring(response, processType);
+      setCreateMenuOpen(false);
+    } catch (error) {
+      console.error('Failed to create backup:', error);
+      alert('Failed to create backup. Please try again.');
+    }
   };
 
   const handleAddClient = () => {
@@ -42,25 +52,32 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
         </h1>
       </div>
       <div className="flex flex-col items-end gap-2">
-        <div className="dropdown dropdown-end">
-          <button
-            onClick={() => setBurgerMenuOpen(!burgerMenuOpen)}
-            className="btn btn-ghost btn-sm opacity-50 hover:opacity-100 transition-opacity"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div className="flex items-center gap-2">
+          {activeProcesses.length > 0 && (
+            <div className="flex items-center gap-2 text-sm opacity-70">
+              <span className="loading loading-spinner loading-sm"></span>
+              <span>{activeProcesses.length} process{activeProcesses.length > 1 ? 'es' : ''} running</span>
+            </div>
+          )}
+          <div className="dropdown dropdown-end">
+            <button
+              onClick={() => setBurgerMenuOpen(!burgerMenuOpen)}
+              className="btn btn-ghost btn-sm opacity-50 hover:opacity-100 transition-opacity"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
 
           {burgerMenuOpen && (
             <ul className="dropdown-content menu menu-sm bg-base-200 rounded-box w-48 p-2 shadow-lg">
@@ -83,27 +100,27 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
               </li>
             </ul>
           )}
-        </div>
+          </div>
 
-        <div className="dropdown dropdown-end">
-          <button
-            onClick={() => handleAddClick(currentPage)}
-            className="btn btn-circle btn-sm"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="dropdown dropdown-end">
+            <button
+              onClick={() => handleAddClick(currentPage)}
+              className="btn btn-circle btn-sm"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </button>
 
           {createMenuOpen && (
             <ul className="dropdown-content menu menu-sm bg-base-200 rounded-box w-48 p-2 shadow-lg">
@@ -129,6 +146,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
               ): null}
             </ul>
           )}
+          </div>
         </div>
       </div>
     </div>

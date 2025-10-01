@@ -1,5 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
+import { Api } from '../utils/api';
+import { useProcessMonitor } from '../hooks/useProcessMonitor';
 
 interface BackupActionMenuProps {
   backupId: string;
@@ -9,16 +11,35 @@ export const BackupActionMenu: React.FC<BackupActionMenuProps> = ({
   backupId,
 }) => {
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
-  const isOpen = menuOpen === backupId
+  const isOpen = menuOpen === backupId;
+  const { startMonitoring } = useProcessMonitor();
 
-  const handleCreateBackup = (fromId: string) => {
-    console.log('Create backup from', fromId);
-    setMenuOpen(null);
+  const handleCreateBackup = async (fromId: string) => {
+    try {
+      const response = await Api.post('/backups', {
+        type: 'incremental',
+        from_backup_id: fromId
+      });
+      startMonitoring(response, 'incremental_backup');
+      setMenuOpen(null);
+    } catch (error) {
+      console.error('Failed to create backup:', error);
+      alert('Failed to create backup. Please try again.');
+    }
   };
 
-  const handleRestore = (id: string) => {
-    console.log('Restore backup', id);
-    setMenuOpen(null);
+  const handleRestore = async (id: string, target: 'folder' | 'database') => {
+    try {
+      const response = await Api.post('/restore', {
+        id,
+        target
+      });
+      startMonitoring(response, 'restore');
+      setMenuOpen(null);
+    } catch (error) {
+      console.error('Failed to restore backup:', error);
+      alert('Failed to restore backup. Please try again.');
+    }
   };
 
   return (
@@ -44,7 +65,7 @@ export const BackupActionMenu: React.FC<BackupActionMenuProps> = ({
           </li>
           <li>
             <button
-              onClick={() => handleRestore(backupId)}
+              onClick={() => handleRestore(backupId, 'folder')}
               className="text-sm"
             >
               Restore to folder
@@ -52,7 +73,7 @@ export const BackupActionMenu: React.FC<BackupActionMenuProps> = ({
           </li>
           <li>
             <button
-              onClick={() => handleRestore(backupId)}
+              onClick={() => handleRestore(backupId, 'database')}
               className="text-sm"
             >
               Restore to database

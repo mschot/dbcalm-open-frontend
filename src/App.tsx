@@ -4,7 +4,15 @@ import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import { checkAuth } from './utils/auth';
 import AddClient from './pages/AddClient';
+import { ProcessMonitorProvider } from './contexts/ProcessMonitorContext';
+import { Toast } from './components/Toast';
+import { useProcessMonitor } from './hooks/useProcessMonitor';
 import './App.css'
+
+const ToastContainer = () => {
+  const { toastMessages, dismissToast } = useProcessMonitor();
+  return <Toast messages={toastMessages} onDismiss={dismissToast} />;
+};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = checkAuth();
@@ -18,45 +26,46 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
+    <ProcessMonitorProvider>
+      <Router>
+        <ToastContainer />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clients"
+            element={
+              <ProtectedRoute>
+                <Clients />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+           path="/add-client"
+           element={
             <ProtectedRoute>
-              <Dashboard />
+              <AddClient />
             </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/clients"
-          element={
-            <ProtectedRoute>
-              <Clients />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-         path="/add-client"
-         element={
-          <ProtectedRoute>
-            <AddClient />
-          </ProtectedRoute>
-          }
-        />
-      </Routes>
-
-
-    </Router>
+            }
+          />
+        </Routes>
+      </Router>
+    </ProcessMonitorProvider>
   );
 }
 
