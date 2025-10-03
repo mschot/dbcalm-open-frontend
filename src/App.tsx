@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
+import Processes from './pages/Processes';
 import { checkAuth } from './utils/auth';
 import AddClient from './pages/AddClient';
 import { ProcessMonitorProvider } from './contexts/ProcessMonitorContext';
@@ -61,6 +62,14 @@ function App() {
             <ProtectedRoute>
               <AddClient />
             </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/processes"
+            element={
+              <ProtectedRoute>
+                <Processes />
+              </ProtectedRoute>
             }
           />
         </Routes>

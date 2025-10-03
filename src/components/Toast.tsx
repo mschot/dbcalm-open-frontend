@@ -7,6 +7,8 @@ export interface ToastMessage {
   message: string;
   type: ToastType;
   duration?: number;
+  link?: string;
+  linkText?: string;
 }
 
 interface ToastProps {
@@ -46,6 +48,15 @@ export const Toast = ({ messages, onDismiss }: ToastProps) => {
         <div key={msg.id} className={`alert ${getAlertClass(msg.type)} shadow-lg`}>
           <div className="flex items-center gap-2">
             <span>{msg.message}</span>
+            {msg.link && (
+              <a
+                href={msg.link}
+                className="btn btn-xs btn-ghost underline"
+                onClick={() => onDismiss(msg.id)}
+              >
+                {msg.linkText || "View Details"}
+              </a>
+            )}
             <button
               onClick={() => onDismiss(msg.id)}
               className="btn btn-ghost btn-xs btn-circle"

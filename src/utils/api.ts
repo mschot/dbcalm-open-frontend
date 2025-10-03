@@ -1,5 +1,11 @@
 import { Config } from "./config"
 
+const handleUnauthorized = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiry');
+    window.location.href = '/login';
+};
+
 export const Api = {
     url: (path: string) => Config.apiUrl + path,
 
@@ -20,12 +26,18 @@ export const Api = {
             return await response.json()
         }
 
+        if (response.status === 401) {
+            handleUnauthorized();
+            throw new Error('Unauthorized');
+        }
+
+        let error = null;
         try {
-            const error = await response.json()
-            throw new Error(error.status)
+            error = await response.json()
         } catch (e) {
             throw new Error(response.statusText)
         }
+        throw new Error(error.detail || error.status || response.statusText)
     },
 
     post: async (path: string, data: object, useAuth: boolean = true) => {
@@ -39,12 +51,18 @@ export const Api = {
             return await response.json()
         }
 
+        if (response.status === 401) {
+            handleUnauthorized();
+            throw new Error('Unauthorized');
+        }
+
+        let error = null;
         try {
-            const error = await response.json()
-            throw new Error(error.status)
+            error = await response.json()
         } catch (e) {
             throw new Error(response.statusText)
         }
+        throw new Error(error.detail || error.status || response.statusText)
     },
 
     put: async (path: string, data: object, useAuth: boolean = true) => {
@@ -58,12 +76,18 @@ export const Api = {
             return await response.json()
         }
 
+        if (response.status === 401) {
+            handleUnauthorized();
+            throw new Error('Unauthorized');
+        }
+
+        let error = null;
         try {
-            const error = await response.json()
-            throw new Error(error.status)
+            error = await response.json()
         } catch (e) {
             throw new Error(response.statusText)
         }
+        throw new Error(error.detail || error.status || response.statusText)
     },
 
     delete: async (path: string, useAuth: boolean = true) => {
@@ -80,11 +104,17 @@ export const Api = {
             return await response.json()
         }
 
+        if (response.status === 401) {
+            handleUnauthorized();
+            throw new Error('Unauthorized');
+        }
+
+        let error = null;
         try {
-            const error = await response.json()
-            throw new Error(error.status)
+            error = await response.json()
         } catch (e) {
             throw new Error(response.statusText)
         }
+        throw new Error(error.detail || error.status || response.statusText)
     }
 }

@@ -12,7 +12,7 @@ export const BackupActionMenu: React.FC<BackupActionMenuProps> = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const isOpen = menuOpen === backupId;
-  const { startMonitoring } = useProcessMonitor();
+  const { startMonitoring, addToast } = useProcessMonitor();
 
   const handleCreateBackup = async (fromId: string) => {
     try {
@@ -23,8 +23,8 @@ export const BackupActionMenu: React.FC<BackupActionMenuProps> = ({
       startMonitoring(response, 'incremental_backup');
       setMenuOpen(null);
     } catch (error) {
-      console.error('Failed to create backup:', error);
-      alert('Failed to create backup. Please try again.');
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      addToast(`Backup creation failed: ${message}`, 'error');
     }
   };
 
@@ -37,8 +37,8 @@ export const BackupActionMenu: React.FC<BackupActionMenuProps> = ({
       startMonitoring(response, 'restore');
       setMenuOpen(null);
     } catch (error) {
-      console.error('Failed to restore backup:', error);
-      alert('Failed to restore backup. Please try again.');
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      addToast(`Restore failed: ${message}`, 'error');
     }
   };
 

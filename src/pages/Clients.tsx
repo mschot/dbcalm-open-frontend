@@ -94,7 +94,7 @@ const Clients = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body p-0">
-            <div className="overflow-x-auto">
+            <div>
               <table className="table table-zebra w-full">
                 <thead>
                   <tr>

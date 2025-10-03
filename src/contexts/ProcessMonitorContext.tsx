@@ -16,6 +16,7 @@ interface ProcessMonitorContextType {
   stopMonitoring: (pid: string) => void;
   toastMessages: ToastMessage[];
   dismissToast: (id: string) => void;
+  addToast: (message: string, type: ToastMessage["type"], link?: string, linkText?: string) => void;
 }
 
 export const ProcessMonitorContext = createContext<ProcessMonitorContextType | undefined>(undefined);
@@ -28,9 +29,14 @@ export const ProcessMonitorProvider = ({ children }: ProcessMonitorProviderProps
   const [activeProcesses, setActiveProcesses] = useState<ActiveProcess[]>([]);
   const [toastMessages, setToastMessages] = useState<ToastMessage[]>([]);
 
-  const addToast = useCallback((message: string, type: ToastMessage["type"]) => {
+  const addToast = useCallback((
+    message: string,
+    type: ToastMessage["type"],
+    link?: string,
+    linkText?: string
+  ) => {
     const id = `${Date.now()}-${Math.random()}`;
-    setToastMessages((prev) => [...prev, { id, message, type }]);
+    setToastMessages((prev) => [...prev, { id, message, type, link, linkText }]);
   }, []);
 
   const dismissToast = useCallback((id: string) => {
@@ -69,7 +75,12 @@ export const ProcessMonitorProvider = ({ children }: ProcessMonitorProviderProps
         if (response.status === "success") {
           addToast(`${typeLabel} completed successfully`, "success");
         } else if (response.status === "failed") {
-          addToast(`${typeLabel} failed`, "error");
+          addToast(
+            `${typeLabel} failed`,
+            "error",
+            `/processes?filter=${process.pid}`,
+            "View Details"
+          );
         }
 
         stopMonitoring(process.pid);
@@ -114,6 +125,7 @@ export const ProcessMonitorProvider = ({ children }: ProcessMonitorProviderProps
         stopMonitoring,
         toastMessages,
         dismissToast,
+        addToast,
       }}
     >
       {children}

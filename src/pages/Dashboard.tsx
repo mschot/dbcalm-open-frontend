@@ -21,10 +21,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchBackups = async () => {
       try {
-        const response = await Api.get(`/backups?order=start_time:desc&page=${currentPage}`) as BackupResponse;
+        const response = await Api.get(`/backups?order=start_time|desc&page=${currentPage}`) as BackupResponse;
         const formattedBackups = response.items.map(item => ({
-          id: item.identifier,
-          type: item.from_identifier === null ? 'full' : 'incremental',
+          id: item.id,
+          type: item.from_backup_id === null ? 'full' : 'incremental',
           created: new Date(item.start_time)
         }));
         setBackups(formattedBackups);
@@ -44,12 +44,11 @@ const Dashboard = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body p-0">
-            <div className="overflow-x-auto">
+            <div>
               <table className="table table-zebra w-full">
                 <thead>
                   <tr>
-                    <th className="text-base-content">Type</th>
-                    <th className="text-base-content">Identifier</th>
+                    <th className="text-base-content">Type</th>                    
                     <th className="text-base-content">Created</th>
                     <th className="text-right text-base-content">Actions</th>
                   </tr>
@@ -59,8 +58,7 @@ const Dashboard = () => {
                     <tr key={backup.id} className="hover">
                       <td>
                         <BackupTypeIcon type={backup.type} />
-                      </td>
-                      <td className="font-medium">{backup.id}</td>
+                      </td>                      
                       <td>{format(backup.created, 'MMM d, yyyy HH:mm')}</td>
                       <td className="text-right">
                         <BackupActionMenu

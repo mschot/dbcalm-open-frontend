@@ -4,7 +4,7 @@ import { Api } from "../utils/api";
 import { useProcessMonitor } from "../hooks/useProcessMonitor";
 
 interface HeaderProps {
-  currentPage?: "backups" | "clients";
+  currentPage?: "backups" | "clients" | "processes";
 }
 
 export const Header = ({ currentPage = "backups" }: HeaderProps) => {
@@ -48,7 +48,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center gap-6 mt-8">
         <h1 className="text-3xl font-bold text-primary">
-          {currentPage === "backups" ? "Backups" : "Clients"}
+          {currentPage === "backups" ? "Backups" : currentPage === "clients" ? "Clients" : "Processes"}
         </h1>
       </div>
       <div className="flex flex-col items-end gap-2">
@@ -89,6 +89,9 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
               </li>
               <li>
                 <a href="/clients" className="text-sm">Clients</a>
+              </li>
+              <li>
+                <a href="/processes" className="text-sm">Processes</a>
               </li>
               <li>
                 <button

@@ -1,7 +1,7 @@
 export interface BackupResponse {
   items: {
-    identifier: string;
-    from_identifier: string | null;
+    id: string;
+    from_backup_id: number | null;
     start_time: string;
     end_time: string;
   }[];
