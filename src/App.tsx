@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import Processes from './pages/Processes';
+import Restores from './pages/Restores';
 import { checkAuth } from './utils/auth';
 import AddClient from './pages/AddClient';
 import { ProcessMonitorProvider } from './contexts/ProcessMonitorContext';
@@ -27,8 +28,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <ProcessMonitorProvider>
-      <Router>
+    <Router>
+      <ProcessMonitorProvider>
         <ToastContainer />
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -72,9 +73,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/restores"
+            element={
+              <ProtectedRoute>
+                <Restores />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-      </Router>
-    </ProcessMonitorProvider>
+      </ProcessMonitorProvider>
+    </Router>
   );
 }
 

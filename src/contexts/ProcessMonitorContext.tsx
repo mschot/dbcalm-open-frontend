@@ -1,4 +1,5 @@
 import { createContext, useCallback, useEffect, useState, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { Api } from "../utils/api";
 import { ToastMessage } from "../components/Toast";
 
@@ -28,6 +29,7 @@ interface ProcessMonitorProviderProps {
 export const ProcessMonitorProvider = ({ children }: ProcessMonitorProviderProps) => {
   const [activeProcesses, setActiveProcesses] = useState<ActiveProcess[]>([]);
   const [toastMessages, setToastMessages] = useState<ToastMessage[]>([]);
+  const navigate = useNavigate();
 
   const addToast = useCallback((
     message: string,
@@ -85,10 +87,15 @@ export const ProcessMonitorProvider = ({ children }: ProcessMonitorProviderProps
 
         stopMonitoring(process.pid);
 
-        // Refresh the page to show updated data
+        // Navigate to appropriate page based on process type
         if (response.status === "success") {
           setTimeout(() => {
-            window.location.reload();
+            if (process.type === "restore") {
+              navigate("/restores");
+            } else {
+              // For backups, refresh current page
+              window.location.reload();
+            }
           }, 1000);
         }
       }
@@ -98,7 +105,7 @@ export const ProcessMonitorProvider = ({ children }: ProcessMonitorProviderProps
       addToast(`Failed to check status for ${typeLabel}`, "error");
       stopMonitoring(process.pid);
     }
-  }, [addToast, stopMonitoring]);
+  }, [addToast, stopMonitoring, navigate]);
 
   useEffect(() => {
     if (activeProcesses.length === 0) return;
