@@ -12,7 +12,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
   const [burgerMenuOpen, setBurgerMenuOpen] = useState(false);
   const [showRestoreInfo, setShowRestoreInfo] = useState(false);
   const navigate = useNavigate();
-  const { startMonitoring, activeProcesses } = useProcessMonitor();
+  const { startMonitoring, activeProcesses, addToast } = useProcessMonitor();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -27,8 +27,8 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
       startMonitoring(response, processType);
       setCreateMenuOpen(false);
     } catch (error) {
-      console.error('Failed to create backup:', error);
-      alert('Failed to create backup. Please try again.');
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      addToast(`Backup creation failed: ${message}`, 'error');
     }
   };
 
@@ -69,7 +69,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
         <div className="flex items-center gap-6 mt-8">
           <h1 className="text-3xl font-bold text-primary">
             {currentPage === "backups" ? "Backups"
-             : currentPage === "clients" ? "Clients"
+             : currentPage === "clients" ? "Client keys"
              : currentPage === "processes" ? "Processes"
              : "Restores"}
           </h1>
@@ -160,7 +160,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
                 <a href="/restores" className="text-sm">Restores</a>
               </li>
               <li>
-                <a href="/clients" className="text-sm">Clients</a>
+                <a href="/clients" className="text-sm">Client keys</a>
               </li>
               <li>
                 <a href="/processes" className="text-sm">Processes</a>

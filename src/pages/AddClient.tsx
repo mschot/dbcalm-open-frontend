@@ -21,7 +21,7 @@ const AddClient = () => {
     e.preventDefault();
 
     if (!label.trim()) {
-      setError('Client label is required');
+      setError('Client key label is required');
       return;
     }
 
@@ -32,8 +32,8 @@ const AddClient = () => {
       const response = await Api.post('/clients', { label }) as ClientCredentials;
       setCredentials(response);
     } catch (err) {
-      console.error('Failed to create client:', err);
-      setError('Failed to create client. Please try again.');
+      console.error('Failed to create client key:', err);
+      setError('Failed to create client key. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -47,7 +47,7 @@ const AddClient = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-              <h2 className="card-title text-2xl mb-2">Client Created Successfully!</h2>
+              <h2 className="card-title text-2xl mb-2">Client key Created Successfully!</h2>
 
               <div className="alert alert-warning mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@ const AddClient = () => {
                   className="btn btn-primary"
                   onClick={() => navigate('/clients')}
                 >
-                  Continue to Clients
+                  Continue to Client keys
                 </button>
               </div>
             </div>
@@ -104,7 +104,7 @@ const AddClient = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title text-2xl mb-6">Add New Client</h2>
+            <h2 className="card-title text-2xl mb-6">Add New Client key</h2>
 
             {error && (
               <div className="alert alert-error mb-4">
@@ -133,7 +133,7 @@ const AddClient = () => {
                   className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Client'}
+                  {isSubmitting ? 'Creating...' : 'Create Client key'}
                 </button>
               </div>
             </form>
