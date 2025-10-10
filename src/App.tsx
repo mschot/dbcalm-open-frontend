@@ -4,8 +4,10 @@ import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import Processes from './pages/Processes';
 import Restores from './pages/Restores';
+import Schedules from './pages/Schedules';
 import { checkAuth } from './utils/auth';
 import AddClient from './pages/AddClient';
+import ScheduleForm from './pages/ScheduleForm';
 import { ProcessMonitorProvider } from './contexts/ProcessMonitorContext';
 import { Toast } from './components/Toast';
 import { useProcessMonitor } from './hooks/useProcessMonitor';
@@ -78,6 +80,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Restores />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schedules"
+            element={
+              <ProtectedRoute>
+                <Schedules />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-schedule"
+            element={
+              <ProtectedRoute>
+                <ScheduleForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schedules/edit/:id"
+            element={
+              <ProtectedRoute>
+                <ScheduleForm />
               </ProtectedRoute>
             }
           />

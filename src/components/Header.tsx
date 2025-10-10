@@ -4,7 +4,7 @@ import { Api } from "../utils/api";
 import { useProcessMonitor } from "../hooks/useProcessMonitor";
 
 interface HeaderProps {
-  currentPage?: "backups" | "clients" | "processes" | "restores";
+  currentPage?: "backups" | "clients" | "processes" | "restores" | "schedules";
 }
 
 export const Header = ({ currentPage = "backups" }: HeaderProps) => {
@@ -37,11 +37,18 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
     setCreateMenuOpen(false);
   };
 
+  const handleAddSchedule = () => {
+    navigate('/add-schedule');
+    setCreateMenuOpen(false);
+  };
+
   const handleAddClick = (currentPage: string) => {
     if (currentPage === "backups") {
       setCreateMenuOpen(!createMenuOpen);
     } else if (currentPage === "clients") {
       handleAddClient();
+    } else if (currentPage === "schedules") {
+      handleAddSchedule();
     } else if (currentPage === "restores") {
       setShowRestoreInfo(true);
     }
@@ -70,6 +77,7 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
           <h1 className="text-3xl font-bold text-primary">
             {currentPage === "backups" ? "Backups"
              : currentPage === "clients" ? "Client keys"
+             : currentPage === "schedules" ? "Schedules"
              : currentPage === "processes" ? "Processes"
              : "Restores"}
           </h1>
@@ -158,6 +166,9 @@ export const Header = ({ currentPage = "backups" }: HeaderProps) => {
               </li>
               <li>
                 <a href="/restores" className="text-sm">Restores</a>
+              </li>
+              <li>
+                <a href="/schedules" className="text-sm">Schedules</a>
               </li>
               <li>
                 <a href="/clients" className="text-sm">Client keys</a>

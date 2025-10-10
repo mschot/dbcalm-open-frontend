@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Api } from "../utils/api";
 import { Process } from "../types/process";
@@ -140,9 +140,8 @@ const Processes = () => {
                 </thead>
                 <tbody>
                   {processes.map((process) => (
-                    <>
+                    <React.Fragment key={process.id}>
                       <tr
-                        key={process.id}
                         id={`process-${process.id}`}
                         className={`hover cursor-pointer transition-colors ${
                           highlightedId === process.id ? "bg-warning bg-opacity-30" : ""
@@ -208,7 +207,7 @@ const Processes = () => {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
