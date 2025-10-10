@@ -27,6 +27,9 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center">
       <div className="card w-96 bg-base-100 shadow-xl">
         <div className="card-body">
+          <div className="flex justify-center mb-4">
+            <img src="/logo.png" alt="DBCalm Logo" className="h-16" />
+          </div>
           <h2 className="card-title">Login</h2>
           {error && (
             <div className="text-red-500 text-sm text-center">
