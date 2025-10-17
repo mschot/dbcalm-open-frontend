@@ -14,10 +14,10 @@ const Login = () => {
     setError('');
     setLoading(true);
 
-    const ok = await handleLogin(username, password);
+    const result = await handleLogin(username, password);
     setLoading(false);
-    if(!ok) {
-      setError('Error logging in');
+    if(!result.success) {
+      setError(result.error || 'Error logging in');
       return
     }
     navigate('/dashboard')

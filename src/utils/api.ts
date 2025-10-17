@@ -40,7 +40,7 @@ export const Api = {
         throw new Error(error.detail || error.status || response.statusText)
     },
 
-    post: async (path: string, data: object, useAuth: boolean = true) => {
+    post: async (path: string, data: object, useAuth: boolean = true, skipUnauthorizedRedirect: boolean = false) => {
         const response = await fetch(Api.url(path), {
             method: 'POST',
             headers: Api.getHeaders(useAuth),
@@ -51,7 +51,7 @@ export const Api = {
             return await response.json()
         }
 
-        if (response.status === 401) {
+        if (response.status === 401 && !skipUnauthorizedRedirect) {
             handleUnauthorized();
             throw new Error('Unauthorized');
         }
