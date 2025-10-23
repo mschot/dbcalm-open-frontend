@@ -1,6 +1,6 @@
 # DBCalm Open Source Frontend
 
-The DBCalm frontend is a modern web application for managing database backups, built with React, TypeScript, and Vite.
+The DBCalm frontend is a modern web application for managing MySQL & MariaDB database backups, built with React, TypeScript, and Vite.
 
 ## Overview
 
