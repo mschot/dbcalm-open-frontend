@@ -1,50 +1,40 @@
-# React + TypeScript + Vite
+# DBCalm Open Source Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The DBCalm frontend is a modern web application for managing database backups, built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The frontend provides a web-based interface for:
 
-## Expanding the ESLint configuration
+- **Dashboard**: Monitor backup status across all your database servers
+- **Client Management**: Add and configure database clients
+- **Backup Scheduling**: Create and manage backup schedules with cron expressions
+- **Restore Operations**: Point-in-time restore functionality
+- **Process Monitoring**: Real-time tracking of backup and restore operations
+- **User Authentication**: Secure login and session management
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technology Stack
 
-- Configure the top-level `parserOptions` property like this:
+- **React 19**: Modern UI library
+- **TypeScript**: Type-safe development
+- **Vite**: Fast build tool with Hot Module Replacement (HMR)
+- **React Router**: Client-side routing
+- **Tailwind CSS 4**: Utility-first styling framework
+- **DaisyUI**: Component library for Tailwind
+- **date-fns**: Date manipulation and formatting
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Documentation
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+For full installation, configuration, and development guides, visit:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+**https://dbcalm.com/docs**
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Backend API
+
+This frontend requires the DBCalm backend API to function. You can find it at:
+
+**https://github.com/mschot/dbcalm-open-backend**
+
+## License
+
+Open Source - see LICENSE file for details
