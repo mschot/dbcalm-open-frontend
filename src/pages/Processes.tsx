@@ -220,14 +220,14 @@ const Processes = () => {
                             <div className="p-4 space-y-4">
                               <div>
                                 <h4 className="font-semibold text-sm mb-2">Command:</h4>
-                                <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words">
+                                <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">
                                   {process.command}
                                 </pre>
                               </div>
                               {process.output && (
                                 <div>
                                   <h4 className="font-semibold text-sm mb-2">Output:</h4>
-                                  <pre className="bg-base-300 p-3 rounded text-sm overflow-x-auto max-h-64 overflow-y-auto">
+                                  <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere max-h-64 overflow-y-auto">
                                     {process.output}
                                   </pre>
                                 </div>
@@ -237,7 +237,7 @@ const Processes = () => {
                                   <h4 className="font-semibold text-sm mb-2 text-error">
                                     Error:
                                   </h4>
-                                  <pre className="bg-base-300 p-3 rounded text-sm overflow-x-auto max-h-64 overflow-y-auto text-error">
+                                  <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere max-h-64 overflow-y-auto text-error">
                                     {process.error}
                                   </pre>
                                 </div>
