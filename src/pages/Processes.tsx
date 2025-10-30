@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/themes/material_blue.css";
 import { Api } from "../utils/api";
 import { Process } from "../types/process";
 import { ProcessResponse } from "../types/processResponse";
@@ -17,19 +19,22 @@ const Processes = () => {
   });
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [highlightedId, setHighlightedId] = useState<number | null>(null);
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [startDateTime, setStartDateTime] = useState<Date | null>(null);
+  const [endDateTime, setEndDateTime] = useState<Date | null>(null);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProcesses = async () => {
       try {
         let queryParams = `order=start_time|desc&page=${currentPage}`;
 
-        if (startDate) {
-          queryParams += `&query=start_time|gte|${startDate}T00:00:00`;
+        if (startDateTime) {
+          const formattedStart = format(startDateTime, "yyyy-MM-dd'T'HH:mm:ss");
+          queryParams += `&query=start_time|gte|${formattedStart}`;
         }
-        if (endDate) {
-          queryParams += `${startDate ? "," : "&query="}start_time|lte|${endDate}T23:59:59`;
+        if (endDateTime) {
+          const formattedEnd = format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss");
+          queryParams += `${startDateTime ? "," : "&query="}start_time|lte|${formattedEnd}`;
         }
 
         const response = await Api.get(`/processes?${queryParams}`) as ProcessResponse;
@@ -41,7 +46,7 @@ const Processes = () => {
     };
 
     fetchProcesses();
-  }, [currentPage, startDate, endDate]);
+  }, [currentPage, startDateTime, endDateTime]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -80,8 +85,8 @@ const Processes = () => {
   };
 
   const handleClearFilters = () => {
-    setStartDate("");
-    setEndDate("");
+    setStartDateTime(null);
+    setEndDateTime(null);
     setCurrentPage(1);
   };
 
@@ -90,43 +95,77 @@ const Processes = () => {
       <div className="container mx-auto">
         <Header currentPage="processes" />
 
-        <div className="card bg-base-100 shadow-xl mb-4">
-          <div className="card-body">
-            <div className="flex gap-4 items-end">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Start Date</span>
-                </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="input input-bordered"
-                />
+        {showFilters && (
+          <div className="card bg-base-100 shadow-xl mb-4">
+            <div className="card-body">
+              <div className="flex gap-4 items-end flex-wrap">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Start Date & Time</span>
+                  </label>
+                  <Flatpickr
+                    value={startDateTime || undefined}
+                    onChange={(dates) => setStartDateTime(dates[0] || null)}
+                    options={{
+                      enableTime: true,
+                      enableSeconds: true,
+                      time_24hr: true,
+                      dateFormat: "Y-m-d H:i:S",
+                    }}
+                    className="input input-bordered"
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">End Date & Time</span>
+                  </label>
+                  <Flatpickr
+                    value={endDateTime || undefined}
+                    onChange={(dates) => setEndDateTime(dates[0] || null)}
+                    options={{
+                      enableTime: true,
+                      enableSeconds: true,
+                      time_24hr: true,
+                      dateFormat: "Y-m-d H:i:S",
+                    }}
+                    className="input input-bordered"
+                  />
+                </div>
+                <button
+                  onClick={handleClearFilters}
+                  className="btn btn-ghost"
+                >
+                  Clear Filters
+                </button>
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">End Date</span>
-                </label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="input input-bordered"
-                />
-              </div>
-              <button
-                onClick={handleClearFilters}
-                className="btn btn-ghost"
-              >
-                Clear Filters
-              </button>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body p-0">
+            <div className="flex justify-end p-4">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="btn btn-ghost btn-sm"
+                title="Toggle Filters"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                  />
+                </svg>
+              </button>
+            </div>
             <div>
               <table className="table table-zebra w-full">
                 <thead>
