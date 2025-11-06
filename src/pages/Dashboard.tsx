@@ -7,6 +7,7 @@ import { BackupResponse } from '../types/backupResponse';
 import { Header } from '../components/Header';
 import { Pagination, PaginationResponse } from '../components/Pagination';
 import { BackupActionMenu } from '../components/BackupActionMenu';
+import { FilterBar } from '../components/FilterBar';
 
 const Dashboard = () => {
   const [backups, setBackups] = useState<Backup[]>([]);
@@ -17,11 +18,18 @@ const Dashboard = () => {
     per_page: 25,
     total_pages: 1
   });
+  const [queryString, setQueryString] = useState<string>("");
 
   useEffect(() => {
     const fetchBackups = async () => {
       try {
-        const response = await Api.get(`/backups?order=start_time|desc&page=${currentPage}`) as BackupResponse;
+        let queryParams = `order=start_time|desc&page=${currentPage}`;
+
+        if (queryString) {
+          queryParams += `&query=${queryString}`;
+        }
+
+        const response = await Api.get(`/backups?${queryParams}`) as BackupResponse;
         const formattedBackups = response.items.map(item => ({
           id: item.id,
           type: item.from_backup_id === null ? 'full' : 'incremental',
@@ -35,7 +43,7 @@ const Dashboard = () => {
     };
 
     fetchBackups();
-  }, [currentPage]);
+  }, [currentPage, queryString]);
 
   return (
     <div className="min-h-screen bg-base-200 p-4">
@@ -44,6 +52,22 @@ const Dashboard = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body p-0">
+            <FilterBar
+              filters={[
+                { type: 'time', fieldName: 'start_time' },
+                {
+                  type: 'select',
+                  fieldName: 'from_backup_id',
+                  operator: 'eq',
+                  options: [
+                    { value: '', label: 'All types' },
+                    { value: 'null', label: 'Full' },
+                    { value: 'not_null', label: 'Incremental' }
+                  ]
+                }
+              ]}
+              onQueryChange={setQueryString}
+            />
             <div>
               <table className="table table-zebra w-full">
                 <thead>

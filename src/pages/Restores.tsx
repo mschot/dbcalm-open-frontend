@@ -5,6 +5,7 @@ import { RestoreTypeIcon } from '../components/RestoreTypeIcon';
 import { RestoreResponse } from '../types/restoreResponse';
 import { Header } from '../components/Header';
 import { Pagination, PaginationResponse } from '../components/Pagination';
+import { FilterBar } from '../components/FilterBar';
 
 interface DisplayRestore {
   id: number;
@@ -24,11 +25,18 @@ const Restores = () => {
     per_page: 25,
     total_pages: 1
   });
+  const [queryString, setQueryString] = useState<string>("");
 
   useEffect(() => {
     const fetchRestores = async () => {
       try {
-        const response = await Api.get(`/restores?order=start_time|desc&page=${currentPage}`) as RestoreResponse;
+        let queryParams = `order=start_time|desc&page=${currentPage}`;
+
+        if (queryString) {
+          queryParams += `&query=${queryString}`;
+        }
+
+        const response = await Api.get(`/restores?${queryParams}`) as RestoreResponse;
         const formattedRestores = response.items.map(item => ({
           id: item.id,
           start_time: new Date(item.start_time),
@@ -45,7 +53,7 @@ const Restores = () => {
     };
 
     fetchRestores();
-  }, [currentPage]);
+  }, [currentPage, queryString]);
 
   // Truncate path to show last 2 segments (e.g., /restores/2025-10-03-14-30-45)
   const getTruncatedPath = (path: string) => {
@@ -61,6 +69,12 @@ const Restores = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body p-0">
+            <FilterBar
+              filters={[
+                { type: 'time', fieldName: 'start_time' }
+              ]}
+              onQueryChange={setQueryString}
+            />
             <div>
               <table className="table table-zebra w-full">
                 <thead>
