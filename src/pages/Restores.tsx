@@ -96,36 +96,44 @@ const Restores = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {restores.map((restore) => (
-                    <tr key={restore.id} className="hover">
-                      <td>
-                        <RestoreTypeIcon type={restore.target} />
-                      </td>
-                      <td>{format(restore.start_time, 'MMM d, yyyy HH:mm')}</td>
-                      <td>
-                        {restore.backup_timestamp ? (
-                          format(restore.backup_timestamp, 'MMM d, yyyy HH:mm')
-                        ) : (
-                          <span className="text-gray-500 italic">N/A</span>
-                        )}
-                      </td>
-                      <td>
-                        {restore.target === 'folder' ? (
-                          <div
-                            className="group relative cursor-help"
-                            title={restore.target_path}
-                          >
-                            <span>{getTruncatedPath(restore.target_path)}</span>
-                            <span className="opacity-0 group-hover:opacity-100 absolute left-0 top-full mt-1 bg-base-200 text-sm px-2 py-1 rounded z-10 whitespace-nowrap">
-                              {restore.target_path}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-gray-500 italic">Database</span>
-                        )}
+                  {restores.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="text-center py-8 text-gray-500">
+                        No restores found.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    restores.map((restore) => (
+                      <tr key={restore.id} className="hover">
+                        <td>
+                          <RestoreTypeIcon type={restore.target} />
+                        </td>
+                        <td>{format(restore.start_time, 'MMM d, yyyy HH:mm')}</td>
+                        <td>
+                          {restore.backup_timestamp ? (
+                            format(restore.backup_timestamp, 'MMM d, yyyy HH:mm')
+                          ) : (
+                            <span className="text-gray-500 italic">N/A</span>
+                          )}
+                        </td>
+                        <td>
+                          {restore.target === 'folder' ? (
+                            <div
+                              className="group relative cursor-help"
+                              title={restore.target_path}
+                            >
+                              <span>{getTruncatedPath(restore.target_path)}</span>
+                              <span className="opacity-0 group-hover:opacity-100 absolute left-0 top-full mt-1 bg-base-200 text-sm px-2 py-1 rounded z-10 whitespace-nowrap">
+                                {restore.target_path}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-gray-500 italic">Database</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

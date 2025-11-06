@@ -111,76 +111,84 @@ const Processes = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {processes.map((process) => (
-                    <React.Fragment key={process.id}>
-                      <tr
-                        id={`process-${process.id}`}
-                        className={`hover cursor-pointer transition-colors ${
-                          highlightedId === process.id ? "bg-warning bg-opacity-30" : ""
-                        }`}
-                        onClick={() => toggleExpand(process.id)}
-                      >
-                        <td className="font-medium">{process.type}</td>
-                        <td>{getStatusBadge(process.status)}</td>
-                        <td>{format(new Date(process.start_time), "MMM d, yyyy HH:mm:ss")}</td>
-                        <td>
-                          {process.end_time
-                            ? format(new Date(process.end_time), "MMM d, yyyy HH:mm:ss")
-                            : "-"}
-                        </td>
-                        <td className="text-right">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-5 w-5 transition-transform ${
-                              expandedId === process.id ? "rotate-180" : ""
-                            }`}
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </td>
-                      </tr>
-                      {expandedId === process.id && (
-                        <tr>
-                          <td colSpan={5} className="bg-base-200">
-                            <div className="p-4 space-y-4">
-                              <div>
-                                <h4 className="font-semibold text-sm mb-2">Command:</h4>
-                                <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">
-                                  {process.command}
-                                </pre>
-                              </div>
-                              {process.output && (
-                                <div>
-                                  <h4 className="font-semibold text-sm mb-2">Output:</h4>
-                                  <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere max-h-64 overflow-y-auto">
-                                    {process.output}
-                                  </pre>
-                                </div>
-                              )}
-                              {process.error && (
-                                <div>
-                                  <h4 className="font-semibold text-sm mb-2 text-error">
-                                    Error:
-                                  </h4>
-                                  <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere max-h-64 overflow-y-auto text-error">
-                                    {process.error}
-                                  </pre>
-                                </div>
-                              )}
-                            </div>
+                  {processes.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="text-center py-8 text-gray-500">
+                        No processes found.
+                      </td>
+                    </tr>
+                  ) : (
+                    processes.map((process) => (
+                      <React.Fragment key={process.id}>
+                        <tr
+                          id={`process-${process.id}`}
+                          className={`hover cursor-pointer transition-colors ${
+                            highlightedId === process.id ? "bg-warning bg-opacity-30" : ""
+                          }`}
+                          onClick={() => toggleExpand(process.id)}
+                        >
+                          <td className="font-medium">{process.type}</td>
+                          <td>{getStatusBadge(process.status)}</td>
+                          <td>{format(new Date(process.start_time), "MMM d, yyyy HH:mm:ss")}</td>
+                          <td>
+                            {process.end_time
+                              ? format(new Date(process.end_time), "MMM d, yyyy HH:mm:ss")
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-5 w-5 transition-transform ${
+                                expandedId === process.id ? "rotate-180" : ""
+                              }`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
                           </td>
                         </tr>
-                      )}
-                    </React.Fragment>
-                  ))}
+                        {expandedId === process.id && (
+                          <tr>
+                            <td colSpan={5} className="bg-base-200">
+                              <div className="p-4 space-y-4">
+                                <div>
+                                  <h4 className="font-semibold text-sm mb-2">Command:</h4>
+                                  <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">
+                                    {process.command}
+                                  </pre>
+                                </div>
+                                {process.output && (
+                                  <div>
+                                    <h4 className="font-semibold text-sm mb-2">Output:</h4>
+                                    <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere max-h-64 overflow-y-auto">
+                                      {process.output}
+                                    </pre>
+                                  </div>
+                                )}
+                                {process.error && (
+                                  <div>
+                                    <h4 className="font-semibold text-sm mb-2 text-error">
+                                      Error:
+                                    </h4>
+                                    <pre className="bg-base-300 p-3 rounded text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere max-h-64 overflow-y-auto text-error">
+                                      {process.error}
+                                    </pre>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

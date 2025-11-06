@@ -78,19 +78,27 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {backups.map((backup) => (
-                    <tr key={backup.id} className="hover">
-                      <td>
-                        <BackupTypeIcon type={backup.type} />
-                      </td>                      
-                      <td>{format(backup.created, 'MMM d, yyyy HH:mm')}</td>
-                      <td className="text-right">
-                        <BackupActionMenu
-                          backupId={backup.id}
-                        />
+                  {backups.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="text-center py-8 text-gray-500">
+                        No backups found. Click the + button to create one.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    backups.map((backup) => (
+                      <tr key={backup.id} className="hover">
+                        <td>
+                          <BackupTypeIcon type={backup.type} />
+                        </td>
+                        <td>{format(backup.created, 'MMM d, yyyy HH:mm')}</td>
+                        <td className="text-right">
+                          <BackupActionMenu
+                            backupId={backup.id}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
