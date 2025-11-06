@@ -71,7 +71,17 @@ const Restores = () => {
           <div className="card-body p-0">
             <FilterBar
               filters={[
-                { type: 'time', fieldName: 'start_time' }
+                { type: 'time', fieldName: 'start_time' },
+                {
+                  type: 'select',
+                  fieldName: 'target',
+                  operator: 'eq',
+                  options: [
+                    { value: '', label: 'All types' },
+                    { value: 'database', label: 'Database' },
+                    { value: 'folder', label: 'Folder' }
+                  ]
+                }
               ]}
               onQueryChange={setQueryString}
             />

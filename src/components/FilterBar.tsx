@@ -80,13 +80,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
         <DateTimePicker
           value={filterValues[startKey] || undefined}
           onChange={(date) => handleFilterChange(startKey, date)}
-          className="input input-bordered"
+          className="input input-bordered w-full lg:w-48"
           placeholder="Start time"
         />
         <DateTimePicker
           value={filterValues[endKey] || undefined}
           onChange={(date) => handleFilterChange(endKey, date)}
-          className="input input-bordered"
+          className="input input-bordered w-full lg:w-48"
           placeholder="End time"
         />
       </React.Fragment>
@@ -99,7 +99,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
         key={filter.fieldName}
         value={filterValues[filter.fieldName] || ''}
         onChange={(e) => handleFilterChange(filter.fieldName, e.target.value)}
-        className="select select-bordered"
+        className="select select-bordered w-full lg:w-48"
       >
         {filter.options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -115,7 +115,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
       {showFilters && (
         <div className="card bg-base-100 shadow-xl mb-4">
           <div className="card-body">
-            <div className="flex gap-4 items-center flex-wrap">
+            <div className="flex gap-4 items-center flex-wrap lg:flex-nowrap">
               {filters.map((filter) => {
                 if (filter.type === 'time') {
                   return renderTimeFilter(filter);
@@ -126,7 +126,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
               })}
               <button
                 onClick={handleClearFilters}
-                className="btn btn-ghost"
+                className="btn btn-ghost w-full lg:w-auto"
               >
                 Clear Filters
               </button>
