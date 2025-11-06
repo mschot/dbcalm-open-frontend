@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/material_blue.css";
+import { DateTimePicker } from "../components/DateTimePicker";
 import { Api } from "../utils/api";
 import { Process } from "../types/process";
 import { ProcessResponse } from "../types/processResponse";
@@ -21,6 +20,7 @@ const Processes = () => {
   const [highlightedId, setHighlightedId] = useState<number | null>(null);
   const [startDateTime, setStartDateTime] = useState<Date | null>(null);
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
+  const [processType, setProcessType] = useState<string>("");
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
   useEffect(() => {
@@ -29,12 +29,15 @@ const Processes = () => {
         let queryParams = `order=start_time|desc&page=${currentPage}`;
 
         if (startDateTime) {
-          const formattedStart = format(startDateTime, "yyyy-MM-dd'T'HH:mm:ss");
+          const formattedStart = format(startDateTime, "yyyy-MM-dd'T'HH:mm");
           queryParams += `&query=start_time|gte|${formattedStart}`;
         }
         if (endDateTime) {
-          const formattedEnd = format(endDateTime, "yyyy-MM-dd'T'HH:mm:ss");
+          const formattedEnd = format(endDateTime, "yyyy-MM-dd'T'HH:mm");
           queryParams += `${startDateTime ? "," : "&query="}start_time|lte|${formattedEnd}`;
+        }
+        if (processType) {
+          queryParams += `${startDateTime || endDateTime ? "," : "&query="}type|eq|${processType}`;
         }
 
         const response = await Api.get(`/processes?${queryParams}`) as ProcessResponse;
@@ -46,7 +49,7 @@ const Processes = () => {
     };
 
     fetchProcesses();
-  }, [currentPage, startDateTime, endDateTime]);
+  }, [currentPage, startDateTime, endDateTime, processType]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -87,6 +90,7 @@ const Processes = () => {
   const handleClearFilters = () => {
     setStartDateTime(null);
     setEndDateTime(null);
+    setProcessType("");
     setCurrentPage(1);
   };
 
@@ -98,39 +102,28 @@ const Processes = () => {
         {showFilters && (
           <div className="card bg-base-100 shadow-xl mb-4">
             <div className="card-body">
-              <div className="flex gap-4 items-end flex-wrap">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Start Date & Time</span>
-                  </label>
-                  <Flatpickr
-                    value={startDateTime || undefined}
-                    onChange={(dates) => setStartDateTime(dates[0] || null)}
-                    options={{
-                      enableTime: true,
-                      enableSeconds: true,
-                      time_24hr: true,
-                      dateFormat: "Y-m-d H:i:S",
-                    }}
-                    className="input input-bordered"
-                  />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">End Date & Time</span>
-                  </label>
-                  <Flatpickr
-                    value={endDateTime || undefined}
-                    onChange={(dates) => setEndDateTime(dates[0] || null)}
-                    options={{
-                      enableTime: true,
-                      enableSeconds: true,
-                      time_24hr: true,
-                      dateFormat: "Y-m-d H:i:S",
-                    }}
-                    className="input input-bordered"
-                  />
-                </div>
+              <div className="flex gap-4 items-center flex-wrap">
+                <DateTimePicker
+                  value={startDateTime || undefined}
+                  onChange={(date) => setStartDateTime(date)}
+                  className="input input-bordered"
+                  placeholder="Start time"
+                />
+                <DateTimePicker
+                  value={endDateTime || undefined}
+                  onChange={(date) => setEndDateTime(date)}
+                  className="input input-bordered"
+                  placeholder="End time"
+                />
+                <select
+                  value={processType}
+                  onChange={(e) => setProcessType(e.target.value)}
+                  className="select select-bordered"
+                >
+                  <option value="">All types</option>
+                  <option value="backup">backup</option>
+                  <option value="restore">restore</option>
+                </select>
                 <button
                   onClick={handleClearFilters}
                   className="btn btn-ghost"
