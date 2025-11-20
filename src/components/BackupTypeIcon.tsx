@@ -3,7 +3,7 @@ export const BackupTypeIcon = ({ type }: { type: string }) => {
   const title = isIncremental ? 'Incremental' : 'Full';
 
   return (
-    <div className="flex items-center gap-2 group cursor-help">
+    <div className="flex items-center gap-2">
       <svg
         viewBox="0 0 24 24"
         className="w-5 h-5"
@@ -18,7 +18,7 @@ export const BackupTypeIcon = ({ type }: { type: string }) => {
           <circle cx="12" cy="12" r="10" />
         )}
       </svg>
-      <span className="opacity-0 group-hover:opacity-100 absolute bg-base-200 text-sm px-2 py-1 rounded">
+      <span className="text-sm">
         {title}
       </span>
     </div>

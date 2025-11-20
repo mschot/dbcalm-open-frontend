@@ -5,6 +5,7 @@ import { Schedule } from '../types/schedule';
 import { ScheduleResponse } from '../types/scheduleResponse';
 import { Header } from '../components/Header';
 import { Pagination, PaginationResponse } from '../components/Pagination';
+import { BackupTypeIcon } from '../components/BackupTypeIcon';
 
 const Schedules = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -122,9 +123,7 @@ const Schedules = () => {
                     schedules.map((schedule) => (
                       <tr key={schedule.id} className="hover">
                         <td>
-                          <span className={`badge ${schedule.backup_type === 'full' ? 'badge-primary' : 'badge-secondary'}`}>
-                            {schedule.backup_type === 'full' ? 'Full' : 'Incremental'}
-                          </span>
+                          <BackupTypeIcon type={schedule.backup_type} />
                         </td>
                         <td>{formatScheduleTime(schedule)}</td>
                         <td>
