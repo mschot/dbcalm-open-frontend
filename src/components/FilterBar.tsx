@@ -20,9 +20,10 @@ export type FilterConfig = TimeFilterConfig | SelectFilterConfig;
 interface FilterBarProps {
   filters: FilterConfig[];
   onQueryChange: (queryString: string) => void;
+  actionButtons?: React.ReactNode;
 }
 
-export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange, actionButtons }) => {
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [filterValues, setFilterValues] = useState<Record<string, any>>({});
 
@@ -158,7 +159,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
       )}
 
       {!showFilters && (
-        <div className="flex justify-end p-4">
+        <div className="flex justify-between gap-2 px-4 pt-4">
+          <div className="flex gap-2">
+            {actionButtons}
+          </div>
           <button
             onClick={() => setShowFilters(true)}
             className="btn btn-ghost btn-sm"
