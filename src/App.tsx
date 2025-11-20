@@ -9,6 +9,7 @@ import { checkAuth } from './utils/auth';
 import AddClient from './pages/AddClient';
 import ScheduleForm from './pages/ScheduleForm';
 import { ProcessMonitorProvider } from './contexts/ProcessMonitorContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { Toast } from './components/Toast';
 import { useProcessMonitor } from './hooks/useProcessMonitor';
 import './App.css'
@@ -30,10 +31,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router>
-      <ProcessMonitorProvider>
-        <ToastContainer />
-        <Routes>
+    <ThemeProvider>
+      <Router>
+        <ProcessMonitorProvider>
+          <ToastContainer />
+          <Routes>
           <Route path="/login" element={<Login />} />
           <Route
             path="/dashboard"
@@ -107,9 +109,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Routes>
-      </ProcessMonitorProvider>
-    </Router>
+          </Routes>
+        </ProcessMonitorProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 

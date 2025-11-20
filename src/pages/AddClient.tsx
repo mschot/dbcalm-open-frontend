@@ -21,7 +21,7 @@ const AddClient = () => {
     e.preventDefault();
 
     if (!label.trim()) {
-      setError('Client key label is required');
+      setError('API key label is required');
       return;
     }
 
@@ -32,8 +32,8 @@ const AddClient = () => {
       const response = await Api.post('/clients', { label }) as ClientCredentials;
       setCredentials(response);
     } catch (err) {
-      console.error('Failed to create client key:', err);
-      setError('Failed to create client key. Please try again.');
+      console.error('Failed to create API key:', err);
+      setError('Failed to create API key. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -47,14 +47,14 @@ const AddClient = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-              <h2 className="card-title text-2xl mb-2">Client key Created Successfully!</h2>
+              <h2 className="card-title text-2xl mb-2">API Key Created Successfully!</h2>
 
               <div className="alert alert-warning mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
                 <span>
-                  <strong>Important:</strong> Please copy and store the client secret safely.
+                  <strong>Important:</strong> Please copy and store the API secret safely.
                   You won't be able to see it again after leaving this page.
                 </span>
               </div>
@@ -68,14 +68,14 @@ const AddClient = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="text-sm font-semibold">Client ID:</label>
+                  <label className="text-sm font-semibold">API Key ID:</label>
                   <div className="font-mono bg-base-100 p-2 rounded mt-1">
                     {credentials.id}
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <label className="text-sm font-semibold">Client Secret:</label>
+                  <label className="text-sm font-semibold">API Secret:</label>
                   <div className="font-mono bg-base-100 p-2 rounded mt-1">
                     {credentials.secret}
               </div>
@@ -87,7 +87,7 @@ const AddClient = () => {
                   className="btn btn-primary"
                   onClick={() => navigate('/clients')}
                 >
-                  Continue to Client keys
+                  Continue to API keys
                 </button>
               </div>
             </div>
@@ -104,7 +104,7 @@ const AddClient = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title text-2xl mb-6">Add New Client key</h2>
+            <h2 className="card-title text-2xl mb-6">Add New API Key</h2>
 
             {error && (
               <div className="alert alert-error mb-4">
@@ -119,7 +119,7 @@ const AddClient = () => {
               <div className="form-control">
                 <input
                   type="text"
-                  placeholder="Enter client label"
+                  placeholder="Enter API key label"
                   className="input input-bordered"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
@@ -133,7 +133,7 @@ const AddClient = () => {
                   className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Client key'}
+                  {isSubmitting ? 'Creating...' : 'Create API Key'}
                 </button>
               </div>
             </form>

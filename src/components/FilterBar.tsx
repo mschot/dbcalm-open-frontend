@@ -115,6 +115,18 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
       {showFilters && (
         <div className="card bg-base-100 shadow-xl mb-4">
           <div className="card-body">
+            {/* Mobile close button - top right */}
+            <div className="flex justify-end mb-2 lg:hidden">
+              <button
+                onClick={() => setShowFilters(false)}
+                className="btn btn-ghost btn-xs"
+                title="Close filters"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             <div className="flex gap-4 items-center flex-wrap lg:flex-nowrap">
               {filters.map((filter) => {
                 if (filter.type === 'time') {
@@ -130,33 +142,45 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onQueryChange }) 
               >
                 Clear Filters
               </button>
+              {/* Desktop close button - far right inline */}
+              <button
+                onClick={() => setShowFilters(false)}
+                className="btn btn-ghost btn-xs hidden lg:block lg:ml-auto"
+                title="Close filters"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="flex justify-end p-4">
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="btn btn-ghost btn-sm"
-          title="Toggle Filters"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+      {!showFilters && (
+        <div className="flex justify-end p-4">
+          <button
+            onClick={() => setShowFilters(true)}
+            className="btn btn-ghost btn-sm"
+            title="Toggle Filters"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-            />
-          </svg>
-        </button>
-      </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </>
   );
 };

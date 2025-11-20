@@ -37,7 +37,7 @@ const Clients = () => {
 
   const handleDeleteClient = async (id: string) => {
     const isConfirmed = window.confirm(
-      "Are you sure you want to delete this client key? This action cannot be undone and may affect services using this client key."
+      "Are you sure you want to delete this API key? This action cannot be undone and may affect services using this API key."
     );
 
     if (isConfirmed) {
@@ -46,8 +46,8 @@ const Clients = () => {
         // Refresh the clients list after deletion
         setClients(clients.filter(client => client.id !== id));
       } catch (error) {
-        console.error('Failed to delete client key:', error);
-        alert('Failed to delete the client key. Please try again.');
+        console.error('Failed to delete API key:', error);
+        alert('Failed to delete the API key. Please try again.');
       }
     }
   };
@@ -74,8 +74,8 @@ const Clients = () => {
       // Exit edit mode
       setEditingId(null);
     } catch (error) {
-      console.error('Failed to update client key label:', error);
-      alert('Failed to update the client key label. Please try again.');
+      console.error('Failed to update API key label:', error);
+      alert('Failed to update the API key label. Please try again.');
     }
   };
 
@@ -99,7 +99,7 @@ const Clients = () => {
                 <thead>
                   <tr>
                     <th className="text-base-content">Label</th>
-                    <th className="text-base-content">Client ID</th>
+                    <th className="text-base-content">API Key ID</th>
                     <th className="text-right text-base-content"></th>
                   </tr>
                 </thead>
@@ -107,7 +107,7 @@ const Clients = () => {
                   {clients.length === 0 ? (
                     <tr>
                       <td colSpan={3} className="text-center py-8 text-gray-500">
-                        No client keys found. Click the + button to add one.
+                        No API keys found. Click the + button to add one.
                       </td>
                     </tr>
                   ) : (
@@ -163,7 +163,7 @@ const Clients = () => {
                           <button
                             onClick={() => handleDeleteClient(client.id)}
                             className="btn btn-ghost btn-sm text-error"
-                            title="Delete client key"
+                            title="Delete API key"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
